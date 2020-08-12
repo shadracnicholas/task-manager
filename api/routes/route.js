@@ -52,6 +52,35 @@ router.delete("/lists/:id", (req, res) => {
 router.get("/lists/:listId/tasks", (req, res) => {
   Task.find({
     _listId: req.params.listId,
+  }).then((tasks) => {
+    res.send(tasks);
+  });
+});
+
+//Create a new task on the list specified
+router.post("/lists/:listId/tasks", (req, res) => {
+  let newTask = new Task({
+    _listId: req.params.listId,
+    title: req.body.title,
+  });
+
+  newTask.save().then((newTaskDoc) => {
+    res.send(newTaskDoc);
+  });
+});
+
+//Edit Tasks of a specified List
+router.patch("/lists/:listId/tasks/:taskId", (req, res) => {
+  Task.findOneAndUpdate(
+    {
+      _id: req.params.id,
+      _listId: req.params.listId,
+    },
+    {
+      $set: req.body,
+    }
+  ).then(() => {
+    res.sendStatus(200);
   });
 });
 
